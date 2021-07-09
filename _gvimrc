@@ -1,0 +1,8 @@
+" In order to set the GUI font
+set guifont=SauceCodePro_Nerd_Font_Mono:h11
+" set guifont=IBMPlexMono:h11
+" set guifont=Cascadia_Mono:h11
+set backspace=indent,eol,start
+
+" In order to disable audio/visual bells
+set vb t_vb=
