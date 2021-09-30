@@ -1,70 +1,164 @@
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+;;; ~/.config/doom/config.el -*- lexical-binding: t; -*-
 
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets.
 (setq user-full-name "Agastya Makkar"
       user-mail-address "agastya.makkar@gmail.com")
 
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
-;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;;
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
+;; When I bring up Doom's scratch buffer with SPC x, it's often to play with
+;; elisp or note something down (that isn't worth an entry in my org files). I
+;; can do both in `lisp-interaction-mode'.
+(setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 
-(setq doom-font (font-spec :size 15 :family "IBM Plex Mono" :weight 'Medium)
-      doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 15)
-      doom-big-font (font-spec :size 24))
-(after! doom-themes
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t))
+;; Line numbers are pretty slow all around. The performance boost of
+;; disabling them outweighs the utility of always keeping them on.
+(setq display-line-numbers-type nil)
+
+;; IMO, modern editors have trained a bad habit into us all: a burning need for
+;; completion all the time -- as we type, as we breathe, as we pray to the
+;; ancient ones -- but how often do you *really* need that information? I say
+;; rarely. So opt for manual completion:
+(setq company-idle-delay 200)
+
+;; Disable invasive lsp-mode features
+(setq lsp-ui-sideline-enable nil   ; not anymore useful than flycheck
+      lsp-ui-doc-enable nil        ; slow and redundant with K
+      lsp-enable-symbol-highlighting nil
+      ;; If an LSP server isn't present when I start a prog-mode buffer, you
+      ;; don't need to tell me. I know. On some systems I don't care to have a
+      ;; whole development environment for some ecosystems.
+      +lsp-prompt-to-install-server 'quiet)
+
+;; Implicit /g flag on evil ex substitution, because I less often want the
+;; default behavior.
+(setq evil-ex-substitute-global t)
+
+(add-load-path! "/home/agastya/.emacs.d/.local/straight/build-27.1/doom-snippets/")
+
+;; Easier to match with a bspwm rule:
+;;   bspc rule -a 'Emacs:emacs-everywhere' state=floating sticky=on
+(setq emacs-everywhere-frame-name-format "emacs-anywhere")
+
+;; The modeline is not useful to me in the popup window. It looks much nicer
+;; to hide it.
+(remove-hook 'emacs-everywhere-init-hooks #'hide-mode-line-mode)
+
+;; Semi-center it over the target window, rather than at the cursor position
+;; (which could be anywhere).
+(defadvice! center-emacs-everywhere-in-origin-window (frame window-info)
+  :override #'emacs-everywhere-set-frame-position
+  (cl-destructuring-bind (x y width height)
+      (emacs-everywhere-window-geometry window-info)
+    (set-frame-position frame
+                        (+ x (/ width 2) (- (/ width 2)))
+                        (+ y (/ height 2)))))
+
+
+;;
+;;; UI
+
+(setq doom-theme 'doom-dracula)
+
+;; "monospace" means use the system default. However, the default is usually two
+;; points larger than I'd like, so I specify size 12 here.
+(setq doom-font (font-spec :family "JetBrainsMono" :size 14 :weight 'light)
+      doom-variable-pitch-font (font-spec :family "Noto Sans" :size 13)
+      ivy-posframe-font (font-spec :family "JetBrainsMono" :size 15))
 (custom-set-faces!
   '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
 
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-city-lights)
+;; Prevents some cases of Emacs flickering
+(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/"
-      org-hide-emphasis-markers t)
-
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type 'relative)
-
-
-;; Here are some additional functions/macros that could help you configure Doom:
 ;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
+;;; Keybinds
 
-(map! :leader
-      :desc "Format buffer according to .editorconfig indent_style and indent_width."
-      "a" #'editorconfig-format-buffer)
+(map! (:after evil-org
+       :map evil-org-mode-map
+       :n "gk" (cmd! (if (org-on-heading-p)
+                         (org-backward-element)
+                       (evil-previous-visual-line)))
+       :n "gj" (cmd! (if (org-on-heading-p)
+                         (org-forward-element)
+                       (evil-next-visual-line))))
 
+      :leader
+      "h L" #'global-keycast-mode
+      "f t" #'find-in-dotfiles
+      "f T" #'browse-dotfiles)
+
+
+;;
+;;; Modules
+
+;;; :completion ivy
+(after! ivy
+  ;; I prefer search matching to be ordered; it's more precise
+  (add-to-list 'ivy-re-builders-alist '(counsel-projectile-find-file . ivy--regex-plus)))
+
+;;; :editor evil
+;; Focus new window after splitting
+(setq evil-split-window-below t
+      evil-vsplit-window-right t)
+
+;;; :tools magit
+(setq magit-repository-directories '(("~/projects" . 2))
+      magit-save-repository-buffers nil
+      ;; Don't restore the wconf after quitting magit, it's jarring
+      magit-inhibit-save-previous-winconf t
+      transient-values '((magit-rebase "--autosquash" "--autostash")
+                         (magit-pull "--rebase" "--autostash")))
+
+;;; :lang org
+(setq org-directory "~/projects/org/"
+      org-hide-emphasis-markers t
+      org-archive-location (concat org-directory ".archive/%s::")
+      org-roam-directory (concat org-directory "notes/")
+      org-roam-db-location (concat org-roam-directory ".org-roam.db")
+      org-journal-encrypt-journal t
+      org-journal-file-format "%Y%m%d.org"
+      org-ellipsis " [...] "
+      ;; I use g{h,j,k} to traverse headings and TAB to toggle their visibility,
+      ;; and leave C-left/C-right to .  I'll do a lot of movement because my
+      ;; presentations tend not to be very linear.
+      org-tree-slide-skip-outline-level 2)
+
+;;; :ui doom-dashboard
+(setq fancy-splash-image (concat doom-private-dir "splash.png"))
+;; Hide the menu for as minimalistic a startup screen as possible.
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+
+;;; :app everywhere
+(after! emacs-everywhere
+  ;; Easier to match with a bspwm rule:
+  ;;   bspc rule -a 'Emacs:emacs-everywhere' state=floating sticky=on
+  (setq emacs-everywhere-frame-name-format "emacs-anywhere")
+
+  ;; The modeline is not useful to me in the popup window. It looks much nicer
+  ;; to hide it.
+  (remove-hook 'emacs-everywhere-init-hooks #'hide-mode-line-mode)
+
+  ;; Semi-center it over the target window, rather than at the cursor position
+  ;; (which could be anywhere).
+  (defadvice! center-emacs-everywhere-in-origin-window (frame window-info)
+    :override #'emacs-everywhere-set-frame-position
+    (cl-destructuring-bind (x y width height)
+        (emacs-everywhere-window-geometry window-info)
+      (set-frame-position frame
+                          (+ x (/ width 2) (- (/ width 2)))
+                          (+ y (/ height 2))))))
+
+
+;;
+;;; Language customizations
+
+(define-generic-mode sxhkd-mode
+  '(?#)
+  '("alt" "Escape" "super" "bspc" "ctrl" "space" "shift") nil
+  '("sxhkdrc") nil
+  "Simple mode for sxhkdrc files.")
+
+
+;; LaTeX Stuff
 (with-eval-after-load 'ox-latex
 (add-to-list 'org-latex-classes
              '("org-plain-latex"
@@ -77,24 +171,3 @@
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
-
-
-(setq explicit-shell-file-name "/usr/bin/bash")
-(setq shell-file-name "bash")
-(setenv "SHELL" shell-file-name)
-
-(after! doom-modeline
-  (add-to-list 'doom-modeline-continuous-word-count-modes 'org-mode)
-
-  (doom-modeline-def-modeline 'main
-    ;; we add the word-count segment at the end
-    '(bar window-number matches buffer-info remote-host buffer-position selection-info word-count)
-    '(objed-state misc-info persp-name irc mu4e github debug input-method buffer-encoding lsp major-mode process vcs checker)))
-
-(add-hook! 'org-mode-hook
-  (add-to-list (make-local-variable 'global-mode-string)
-               '(:eval
-                 (format "%d words"
-                         (count-words (point-min) (point-max))))))
-
-(setq org-startup-with-inline-images t)
