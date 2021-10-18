@@ -18,7 +18,7 @@ set ignorecase
 set smartcase
 set noswapfile
 set nobackup
-set undodir=C:\Users\LENOVO\AppData\nvim\Local\undodir
+set undodir=~/.cache/undodir
 set undofile
 set incsearch
 set termguicolors
@@ -26,17 +26,19 @@ set scrolloff=8
 set noshowmode
 set completeopt=menuone,noinsert,noselect
 " set cursorline
-" set colorcolumn=80
-" set signcolumn=yes
+set colorcolumn=80
+set signcolumn=yes
 set cmdheight=1
 set updatetime=50
 set shortmess+=c
 set mouse=a
-set guifont=Roboto\ Mono:h11
+set guifont=Fira\ Code:h7
+" set guifont=Fantasque\ Sans\ Mono:h9
+" set guifont=SauceCodePro\ Nerd\ Font:h11
 set autochdir
 
 " Plugins
-call plug#begin('C:\Users\LENOVO\AppData\Local\nvim\plugged')
+call plug#begin('~/.local/share/nvim/plugged/')
     Plug 'glepnir/dashboard-nvim'
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'nvim-telescope/telescope.nvim'
@@ -53,6 +55,7 @@ call plug#begin('C:\Users\LENOVO\AppData\Local\nvim\plugged')
     Plug 'ryanoasis/vim-devicons'
     Plug 'tpope/vim-commentary'
     Plug 'preservim/nerdtree'
+    Plug 'lambdalisue/fern.vim'
     Plug 'jiangmiao/auto-pairs'
     Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
     Plug 'tpope/vim-surround'
@@ -73,6 +76,21 @@ call plug#begin('C:\Users\LENOVO\AppData\Local\nvim\plugged')
     Plug 'neovim/nvim-lspconfig'
     Plug 'kabouzeid/nvim-lspinstall'
     Plug 'nvim-lua/completion-nvim'
+    Plug 'turbio/bracey.vim'
+    Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+    Plug 'alvan/vim-closetag'
+    Plug 'pangloss/vim-javascript'
+    Plug 'vim-scripts/loremipsum'
+    Plug 'mattn/emmet-vim'
+    Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
+
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/nvim-cmp'
+    " For vsnip user.
+    Plug 'hrsh7th/cmp-vsnip'
+    Plug 'hrsh7th/vim-vsnip'
 call plug#end()
 
 " dashboard.vim Settings
@@ -81,21 +99,127 @@ let g:indentLine_fileTypeExclude = ['text', 'dashboard', 'terminal']
 " autocmd FileType dashboard set showtabline=0 | autocmd WinLeave <buffer> set showtabline=2
 
 " Colorscheme
-colorscheme deep-space
+colorscheme gruvbox
 
-" Remaps
+" General Remappings
 let mapleader = " "
 inoremap ii <esc>
 nnoremap Y y$
-nnoremap <leader>fp :edit C:\Users\LENOVO\AppData\Local\nvim\init.vim<cr>
-nnoremap <leader>e :NERDTreeFind<cr>
-nnoremap <f2> :source C:\Users\LENOVO\AppData\Local\nvim\init.vim<cr>
+nnoremap <leader>fp :edit ~/.config/nvim/init.vim<cr>
+nnoremap <leader>e :NERDTree .<cr>
+nnoremap <f2> :source ~/.config/nvim/init.vim<cr>
 nnoremap <f3> :PlugInstall<cr>
 nnoremap <f4> :PlugClean<cr>
 nnoremap <leader>bk :bdelete<cr>
 nnoremap <leader>p "*p
 nnoremap <c-b> :py3file %<cr>
+" nnoremap gg=G gg=Gg;
 " vnoremap <leader>p "_dP
+
+" Closing Tag Settings
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.js'
+let g:closetag_xhtml_filenames = '*.xhtml,*.jsx,*.js'
+let g:closetag_filetypes = 'html,xhtml,phtml,js'
+let g:closetag_xhtml_filetypes = 'xhtml,jsx,js'
+let g:closetag_emptyTags_caseSensitive = 0
+" let g:closetag_regions = {
+"     \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+"     \ 'javascript.jsx': 'jsxRegion',
+"     \ 'typescriptreact': 'jsxRegion,tsxRegion',
+"     \ 'javascriptreact': 'jsxRegion',
+"     \ }
+let g:closetag_shortcut = '>'
+" let g:closetag_close_shortcut = '<leader>>'
+
+" nvim-cmp Settings
+set completeopt=menu,menuone,noselect
+
+lua <<EOF
+  -- Setup nvim-cmp.
+  local cmp = require'cmp'
+
+  cmp.setup({
+    snippet = {
+      expand = function(args)
+        -- For `vsnip` user.
+        vim.fn["vsnip#anonymous"](args.body)
+
+        -- For `luasnip` user.
+        -- require('luasnip').lsp_expand(args.body)
+
+        -- For `ultisnips` user.
+        -- vim.fn["UltiSnips#Anon"](args.body)
+      end,
+    },
+    mapping = {
+      ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+      ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+      ['<Down>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+      ['<Up>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.close(),
+      ['<CR>'] = cmp.mapping.confirm({
+        behavior = cmp.ConfirmBehavior.Replace,
+        select = true,
+      })
+    },
+    sources = {
+      { name = 'nvim_lsp' },
+
+      -- For vsnip user.
+      { name = 'vsnip' },
+
+      -- For luasnip user.
+      -- { name = 'luasnip' },
+
+      -- For ultisnips user.
+      -- { name = 'ultisnips' },
+
+      { name = 'buffer' },
+    }
+  })
+
+  -- Setup lspconfig
+    require'lspconfig'.pyright.setup{}
+    require'lspconfig'.tsserver.setup{}
+    require'lspconfig'.texlab.setup{}
+    require'lspconfig'.html.setup{}
+    require'lspconfig'.cssls.setup{}
+    require'lspconfig'.pyright.setup{on_attach=require'completion'.on_attach}
+    require'lspconfig'.tsserver.setup{on_attach=require'completion'.on_attach}
+    require'lspconfig'.texlab.setup{on_attach=require'completion'.on_attach}
+    require'lspconfig'.html.setup{on_attach=require'completion'.on_attach}
+    require'lspconfig'.cssls.setup{on_attach=require'completion'.on_attach}
+EOF
+
+" LSP Remappings
+nnoremap <leader>vd :lua vim.lsp.buf.definition()<CR>
+nnoremap <leader>vi :lua vim.lsp.buf.implementation()<CR>
+nnoremap <leader>vsh :lua vim.lsp.buf.signature_help()<CR>
+nnoremap <leader>vrr :lua vim.lsp.buf.references()<CR>
+nnoremap <leader>vrn :lua vim.lsp.buf.rename()<CR>
+nnoremap <leader>vh :lua vim.lsp.buf.hover()<CR>
+nnoremap <leader>vca :lua vim.lsp.buf.code_action()<CR>
+nnoremap <leader>vsd :lua vim.lsp.diagnostic.show_line_diagnostics(); vim.lsp.util.show_line_diagnostics()<CR>
+nnoremap <leader>vn :lua vim.lsp.diagnostic.goto_next()<CR>
+nnoremap <leader>vll :call LspLocationList()<CR>
+
+" NERDTree Settings
+let NERDTreeShowHidden=1
+" Remove the arrows, not required as the folder icon is present
+let NERDTreeDirArrowExpandable = "\u00a0"
+let NERDTreeDirArrowCollapsible = "\u00a0"
+
+" Nvim-R Settings
+nnoremap <leader>rf \rf
+nnoremap <leader>rq \rq
+nnoremap <leader>aa \ll
+nnoremap <leader>bb \bb
+nnoremap <leader>ff \ff
+nnoremap <leader>ss \ss
+nnoremap <leader>ll \ll
 
 " Telescope
 nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
@@ -111,29 +235,19 @@ inoremap <expr><C-J> pumvisible() ? "\<C-n>" : "\<C-J>"
 inoremap <expr><C-K> pumvisible() ? "\<C-p>" : "\<C-K>"
 inoremap <expr><Cr>  pumvisible() ? "\<C-y>" : "\<Cr>"
 
-" tab and s-tab
-function! InsertTabWrapper(direction)
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
-        return "\<tab>"
-    elseif "backward" == a:direction
-        return "\<c-p>"
-    else
-        return "\<c-n>"
-    endif
-endfunction
-inoremap <tab> <c-r>=InsertTabWrapper ("forward")<cr>
-inoremap <s-tab> <c-r>=InsertTabWrapper ("backward")<cr>
-
-" LSP Settings
-lua << EOF
-require'lspconfig'.pyright.setup{}
-require'lspconfig'.tsserver.setup{}
-require'lspconfig'.texlab.setup{}
-require'lspconfig'.pyright.setup{on_attach=require'completion'.on_attach}
-require'lspconfig'.tsserver.setup{on_attach=require'completion'.on_attach}
-require'lspconfig'.texlab.setup{on_attach=require'completion'.on_attach}
-EOF
+" " tab and s-tab
+" function! InsertTabWrapper(direction)
+"     let col = col('.') - 1
+"     if !col || getline('.')[col - 1] !~ '\k'
+"         return "\<tab>"
+"     elseif "backward" == a:direction
+"         return "\<c-p>"
+"     else
+"         return "\<c-n>"
+"     endif
+" endfunction
+" inoremap <tab> <c-r>=InsertTabWrapper ("forward")<cr>
+" inoremap <s-tab> <c-r>=InsertTabWrapper ("backward")<cr>
 
 " Use completion-nvim in every buffer
 " autocmd BufEnter * lua require'completion'.on_attach()
@@ -184,10 +298,14 @@ let g:snipMate = { 'snippet_version' : 1 }
 
 " indentLine Settings
 let g:indentLine_setColors = 1
-let g:indentLine_char = '█'
+let g:indentLine_char = ''
 
 " vim-latex Settings
 let g:tex_flavor='latex'
 let g:Tex_DefaultTargetFormat = 'pdf'
 let g:Tex_MultipleCompileFormats = 'pdf'
 
+" Neovide Settings
+" let g:neovide_transparency=0.95
+" let g:neovide_cursor_animation_length=0.03
+" let g:neovide_cursor_vfx_mode = "sonicboom"
