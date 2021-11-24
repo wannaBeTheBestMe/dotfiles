@@ -152,6 +152,19 @@ let g:closetag_shortcut = '>'
 " nvim-cmp Settings
 set completeopt=menu,menuone,noselect
 
+" Treesitter Settings
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "all",
+  sync_install = false,
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+}
+EOF
+
+
 lua <<EOF
   -- Setup nvim-cmp.
   local cmp = require'cmp'
