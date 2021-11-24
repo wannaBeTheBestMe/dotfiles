@@ -36,6 +36,7 @@ set guifont=Fira\ Code:h13
 " set guifont=Fantasque\ Sans\ Mono:h9
 " set guifont=SauceCodePro\ Nerd\ Font:h11
 set autochdir
+set guioptions+=a
 
 " Plugins
 call plug#begin('~/.local/share/nvim/plugged/')
@@ -99,6 +100,7 @@ let g:indentLine_fileTypeExclude = ['text', 'dashboard', 'terminal']
 " autocmd FileType dashboard set showtabline=0 | autocmd WinLeave <buffer> set showtabline=2
 
 " Colorscheme
+set background=dark
 colorscheme gruvbox
 
 " General Remappings
@@ -196,8 +198,10 @@ lua <<EOF
     mapping = {
       ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
       ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-      ['<Down>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
       ['<Up>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
+      ['<Down>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+      ['<Tab>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+      ['<S-Tab>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
       ['<C-d>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
@@ -347,11 +351,6 @@ let g:tex_flavor='latex'
 let g:Tex_DefaultTargetFormat = 'pdf'
 let g:Tex_MultipleCompileFormats = 'pdf'
 
-" Neovide Settings
-" let g:neovide_transparency=0.95
-" let g:neovide_cursor_animation_length=0.03
-" let g:neovide_cursor_vfx_mode = "sonicboom"
-
 function! WC()
     let filename = expand("%")
     let cmd = "detex " . filename . " | wc -w | tr -d '[:space:]'"
@@ -360,3 +359,8 @@ function! WC()
 endfunction
 
 command WC call WC()
+
+" Neovide Settings
+" let g:neovide_transparency=0.95
+" let g:neovide_cursor_animation_length=0.03
+" let g:neovide_cursor_vfx_mode = "sonicboom"
