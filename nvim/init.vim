@@ -340,3 +340,12 @@ let g:Tex_MultipleCompileFormats = 'pdf'
 " let g:neovide_transparency=0.95
 " let g:neovide_cursor_animation_length=0.03
 " let g:neovide_cursor_vfx_mode = "sonicboom"
+
+function! WC()
+    let filename = expand("%")
+    let cmd = "detex " . filename . " | wc -w | tr -d '[:space:]'"
+    let result = system(cmd)
+    echo result . " words"
+endfunction
+
+command WC call WC()
