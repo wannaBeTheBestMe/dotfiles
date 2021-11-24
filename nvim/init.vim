@@ -32,7 +32,7 @@ set cmdheight=1
 set updatetime=50
 set shortmess+=c
 set mouse=a
-set guifont=Fira\ Code:h16
+set guifont=Fira\ Code:h13
 " set guifont=Fantasque\ Sans\ Mono:h9
 " set guifont=SauceCodePro\ Nerd\ Font:h11
 set autochdir
@@ -133,6 +133,17 @@ nnoremap <leader>dt :tab split<cr>
 au TabLeave * let g:lasttab = tabpagenr()
 nnoremap <silent> <c-l> :exe "tabn ".g:lasttab<cr>
 vnoremap <silent> <c-l> :exe "tabn ".g:lasttab<cr>
+
+" Airline Settings
+let g:airline_powerline_fonts = 0
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = "unique_tail_improved"
+" let g:airline_left_sep='>'
+" let g:airline_right_sep='<'
+let g:airline#extensions#tabline#left_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = ''
+let g:airline#extensions#tabline#right_sep = ''
+let g:airline#extensions#tabline#right_alt_sep = ''
 
 " Closing Tag Settings
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.js'
