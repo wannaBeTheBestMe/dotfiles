@@ -37,6 +37,7 @@ set guifont=Fira\ Code:h13
 " set guifont=SauceCodePro\ Nerd\ Font:h11
 set autochdir
 set guioptions+=a
+set t_ut=""  " Otherwise colors don't load correctly in the terminal
 
 " Plugins
 call plug#begin('~/.local/share/nvim/plugged/')
@@ -66,7 +67,7 @@ call plug#begin('~/.local/share/nvim/plugged/')
     Plug 'junegunn/limelight.vim'
     Plug 'tomtom/tlib_vim'
     Plug 'MarcWeber/vim-addon-mw-utils'
-    Plug 'garbas/vim-snipmate'
+    " Plug 'garbas/vim-snipmate'
     Plug 'Yggdroot/indentLine'
     Plug 'MaxMEllon/vim-jsx-pretty'
     Plug 'osyo-manga/vim-over'
@@ -92,12 +93,16 @@ call plug#begin('~/.local/share/nvim/plugged/')
     " For vsnip user.
     Plug 'hrsh7th/cmp-vsnip'
     Plug 'hrsh7th/vim-vsnip'
+    Plug 'liuchengxu/vim-which-key'
 call plug#end()
 
 " dashboard.vim Settings
 let g:dashboard_default_executive ='telescope'
 let g:indentLine_fileTypeExclude = ['text', 'dashboard', 'terminal']
 " autocmd FileType dashboard set showtabline=0 | autocmd WinLeave <buffer> set showtabline=2
+
+" vim-which-key Settings
+nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
 " Colorscheme
 set background=dark
@@ -138,7 +143,7 @@ vnoremap <silent> <c-l> :exe "tabn ".g:lasttab<cr>
 
 " Airline Settings
 let g:airline_powerline_fonts = 0
-let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled = 0
 let g:airline#extensions#tabline#formatter = "unique_tail_improved"
 " let g:airline_left_sep='>'
 " let g:airline_right_sep='<'
@@ -350,6 +355,8 @@ let g:indentLine_char = ''
 let g:tex_flavor='latex'
 let g:Tex_DefaultTargetFormat = 'pdf'
 let g:Tex_MultipleCompileFormats = 'pdf'
+
+autocmd TermOpen * setlocal nonumber norelativenumber
 
 function! WC()
     let filename = expand("%")
