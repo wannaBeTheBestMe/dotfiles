@@ -32,7 +32,7 @@ set cmdheight=1
 set updatetime=50
 set shortmess+=c
 set mouse=a
-set guifont=Fira\ Code:h13
+set guifont=Fira\ Code:h12
 " set guifont=Fantasque\ Sans\ Mono:h9
 " set guifont=SauceCodePro\ Nerd\ Font:h11
 set autochdir
@@ -78,7 +78,7 @@ call plug#begin('~/.local/share/nvim/plugged/')
     Plug 'neovim/nvim-lspconfig'
     Plug 'kabouzeid/nvim-lspinstall'
     Plug 'nvim-lua/completion-nvim'
-    Plug 'turbio/bracey.vim'
+    " Plug 'turbio/bracey.vim'
     Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
     Plug 'alvan/vim-closetag'
     Plug 'pangloss/vim-javascript'
@@ -94,6 +94,7 @@ call plug#begin('~/.local/share/nvim/plugged/')
     Plug 'hrsh7th/cmp-vsnip'
     Plug 'hrsh7th/vim-vsnip'
     Plug 'liuchengxu/vim-which-key'
+    Plug 'sbdchd/neoformat'
 call plug#end()
 
 " dashboard.vim Settings
@@ -238,11 +239,13 @@ lua <<EOF
     require'lspconfig'.texlab.setup{}
     require'lspconfig'.html.setup{}
     require'lspconfig'.cssls.setup{}
+    require'lspconfig'.r_language_server.setup{}
     require'lspconfig'.pyright.setup{on_attach=require'completion'.on_attach}
     require'lspconfig'.tsserver.setup{on_attach=require'completion'.on_attach}
     require'lspconfig'.texlab.setup{on_attach=require'completion'.on_attach}
     require'lspconfig'.html.setup{on_attach=require'completion'.on_attach}
     require'lspconfig'.cssls.setup{on_attach=require'completion'.on_attach}
+    require'lspconfig'.r_language_server.setup{on_attach=require'completion'.on_attach}
 EOF
 
 " LSP Remappings
