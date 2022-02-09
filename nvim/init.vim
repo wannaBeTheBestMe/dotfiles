@@ -38,6 +38,7 @@ set guifont=Fira\ Code:h12
 set autochdir
 set guioptions+=a
 set t_ut=""  " Otherwise colors don't load correctly in the terminal
+syntax on
 
 " Plugins
 call plug#begin('~/.local/share/nvim/plugged/')
@@ -76,7 +77,7 @@ call plug#begin('~/.local/share/nvim/plugged/')
     Plug 'vim-airline/vim-airline'
     Plug 'ntpeters/vim-better-whitespace'
     Plug 'neovim/nvim-lspconfig'
-    Plug 'kabouzeid/nvim-lspinstall'
+    Plug 'williamboman/nvim-lsp-installer'
     Plug 'nvim-lua/completion-nvim'
     " Plug 'turbio/bracey.vim'
     Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
@@ -86,7 +87,6 @@ call plug#begin('~/.local/share/nvim/plugged/')
     Plug 'mattn/emmet-vim'
     Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
 
-    Plug 'neovim/nvim-lspconfig'
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-buffer'
     Plug 'hrsh7th/nvim-cmp'
@@ -95,19 +95,9 @@ call plug#begin('~/.local/share/nvim/plugged/')
     Plug 'hrsh7th/vim-vsnip'
     Plug 'liuchengxu/vim-which-key'
     Plug 'sbdchd/neoformat'
+
+    Plug 'voldikss/vim-floaterm'
 call plug#end()
-
-" dashboard.vim Settings
-let g:dashboard_default_executive ='telescope'
-let g:indentLine_fileTypeExclude = ['text', 'dashboard', 'terminal']
-" autocmd FileType dashboard set showtabline=0 | autocmd WinLeave <buffer> set showtabline=2
-
-" vim-which-key Settings
-nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
-
-" Colorscheme
-set background=dark
-colorscheme gruvbox
 
 " General Remappings
 let mapleader = " "
@@ -123,6 +113,19 @@ nnoremap <leader>p "*p
 nnoremap <c-b> :py3file %<cr>
 " nnoremap gg=G gg=Gg;
 " vnoremap <leader>p "_dP
+nnoremap <leader>t :FloatermToggle<cr>
+
+" dashboard.vim Settings
+let g:dashboard_default_executive ='telescope'
+let g:indentLine_fileTypeExclude = ['text', 'dashboard', 'terminal']
+" autocmd FileType dashboard set showtabline=0 | autocmd WinLeave <buffer> set showtabline=2
+
+" vim-which-key Settings
+nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+
+" Colorscheme
+set background=dark
+colorscheme gruvbox
 
 " Go to tab by number
 noremap <leader>1 1gt
@@ -141,6 +144,10 @@ nnoremap <leader>dt :tab split<cr>
 au TabLeave * let g:lasttab = tabpagenr()
 nnoremap <silent> <c-l> :exe "tabn ".g:lasttab<cr>
 vnoremap <silent> <c-l> :exe "tabn ".g:lasttab<cr>
+
+" Emmet Settings
+let g:user_emmet_mode="a"
+let g:user_emmet_leader_key=","
 
 " Airline Settings
 let g:airline_powerline_fonts = 0
@@ -234,18 +241,27 @@ lua <<EOF
   })
 
   -- Setup lspconfig
-    require'lspconfig'.pyright.setup{}
-    require'lspconfig'.tsserver.setup{}
-    require'lspconfig'.texlab.setup{}
-    require'lspconfig'.html.setup{}
-    require'lspconfig'.cssls.setup{}
-    require'lspconfig'.r_language_server.setup{}
-    require'lspconfig'.pyright.setup{on_attach=require'completion'.on_attach}
-    require'lspconfig'.tsserver.setup{on_attach=require'completion'.on_attach}
-    require'lspconfig'.texlab.setup{on_attach=require'completion'.on_attach}
-    require'lspconfig'.html.setup{on_attach=require'completion'.on_attach}
-    require'lspconfig'.cssls.setup{on_attach=require'completion'.on_attach}
-    require'lspconfig'.r_language_server.setup{on_attach=require'completion'.on_attach}
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+  require'lspconfig'.cssls.setup{capabilities=capabilities}
+  require'lspconfig'.cssls.setup{on_attach=require'completion'.on_attach}
+  require'lspconfig'.html.setup{capabilities=capabilities}
+  require'lspconfig'.html.setup{on_attach=require'completion'.on_attach}
+  require'lspconfig'.lemminx.setup{}
+  require'lspconfig'.lemminx.setup{on_attach=require'completion'.on_attach}
+  require'lspconfig'.pyright.setup{}
+  require'lspconfig'.pyright.setup{on_attach=require'completion'.on_attach}
+  require'lspconfig'.sumneko_lua.setup{}
+  require'lspconfig'.sumneko_lua.setup{on_attach=require'completion'.on_attach}
+  require'lspconfig'.texlab.setup{}
+  require'lspconfig'.texlab.setup{on_attach=require'completion'.on_attach}
+  require'lspconfig'.tsserver.setup{}
+  require'lspconfig'.tsserver.setup{on_attach=require'completion'.on_attach}
+  require'lspconfig'.vimls.setup{}
+  require'lspconfig'.vimls.setup{on_attach=require'completion'.on_attach}
+  require'lspconfig'.yamlls.setup{}
+  require'lspconfig'.yamlls.setup{on_attach=require'completion'.on_attach}
 EOF
 
 " LSP Remappings
@@ -371,6 +387,6 @@ endfunction
 command WC call WC()
 
 " Neovide Settings
-" let g:neovide_transparency=0.95
+let g:neovide_transparency=1
 " let g:neovide_cursor_animation_length=0.03
-" let g:neovide_cursor_vfx_mode = "sonicboom"
+let g:neovide_cursor_vfx_mode = "sonicboom"
