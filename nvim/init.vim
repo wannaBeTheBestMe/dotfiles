@@ -32,7 +32,7 @@ set cmdheight=1
 set updatetime=50
 set shortmess+=c
 set mouse=a
-set guifont=Fira\ Code:h15
+set guifont=Fira\ Code:h17
 " set guifont=Fantasque\ Sans\ Mono:h9
 " set guifont=SauceCodePro\ Nerd\ Font:h11
 set autochdir
@@ -96,7 +96,7 @@ call plug#begin('~/.local/share/nvim/plugged/')
     Plug 'hrsh7th/vim-vsnip'
     Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'liuchengxu/vim-which-key'
-    " Plug 'sbdchd/neoformat' " ?
+    Plug 'sbdchd/neoformat'
 
     Plug 'voldikss/vim-floaterm'
 call plug#end()
@@ -105,9 +105,15 @@ call plug#end()
 let mapleader = " "
 inoremap ii <esc>
 nnoremap Y y$
-nnoremap <leader>fp :edit ~/.config/nvim/init.vim<cr>
+if has("unix")
+    nnoremap <leader>fp :edit ~/.config/nvim/init.vim<cr>
+    nnoremap <f2> :source ~/.config/nvim/init.vim<cr>
+endif
+if has ("win32")
+    nnoremap <leader>fp :edit ~\AppData\Local\nvim\init.vim<cr>
+    nnoremap <f2> :source ~\AppData\Local\nvim\init.vim<cr>
+endif
 nnoremap <leader>e :NERDTree .<cr>
-nnoremap <f2> :source ~/.config/nvim/init.vim<cr>
 nnoremap <f3> :PlugInstall<cr>
 nnoremap <f4> :PlugClean<cr>
 nnoremap <leader>bk :bdelete<cr>
@@ -147,6 +153,9 @@ nnoremap <leader>dt :tab split<cr>
 au TabLeave * let g:lasttab = tabpagenr()
 nnoremap <silent> <c-l> :exe "tabn ".g:lasttab<cr>
 vnoremap <silent> <c-l> :exe "tabn ".g:lasttab<cr>
+
+" Neoformat Settings
+let g:neoformat_basic_format_retab = 1
 
 " Emmet Settings
 let g:user_emmet_mode="a"
