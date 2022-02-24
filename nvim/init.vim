@@ -32,7 +32,7 @@ set cmdheight=1
 set updatetime=50
 set shortmess+=c
 set mouse=a
-set guifont=Fira\ Code:h12
+set guifont=Fira\ Code:h15
 " set guifont=Fantasque\ Sans\ Mono:h9
 " set guifont=SauceCodePro\ Nerd\ Font:h11
 set autochdir
@@ -58,7 +58,7 @@ call plug#begin('~/.local/share/nvim/plugged/')
     Plug 'ryanoasis/vim-devicons'
     Plug 'tpope/vim-commentary'
     Plug 'preservim/nerdtree'
-    Plug 'lambdalisue/fern.vim'
+    " Plug 'lambdalisue/fern.vim'
     Plug 'jiangmiao/auto-pairs'
     Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
     Plug 'tpope/vim-surround'
@@ -69,20 +69,21 @@ call plug#begin('~/.local/share/nvim/plugged/')
     Plug 'tomtom/tlib_vim'
     Plug 'MarcWeber/vim-addon-mw-utils'
     " Plug 'garbas/vim-snipmate'
-    Plug 'Yggdroot/indentLine'
+    " Plug 'Yggdroot/indentLine'
     Plug 'MaxMEllon/vim-jsx-pretty'
     Plug 'osyo-manga/vim-over'
     Plug 'ap/vim-css-color'
     Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-rhubarb'
     Plug 'vim-airline/vim-airline'
     Plug 'ntpeters/vim-better-whitespace'
     Plug 'neovim/nvim-lspconfig'
     Plug 'williamboman/nvim-lsp-installer'
     Plug 'nvim-lua/completion-nvim'
-    " Plug 'turbio/bracey.vim'
-    Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+    Plug 'turbio/bracey.vim'
+    " Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
     Plug 'alvan/vim-closetag'
-    Plug 'pangloss/vim-javascript'
+    Plug 'pangloss/vim-javascript' " ?
     Plug 'vim-scripts/loremipsum'
     Plug 'mattn/emmet-vim'
     Plug 'jalvesaq/Nvim-R', {'branch': 'stable'}
@@ -90,11 +91,12 @@ call plug#begin('~/.local/share/nvim/plugged/')
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-buffer'
     Plug 'hrsh7th/nvim-cmp'
-    " For vsnip user.
+    " For vsnip user.lua
     Plug 'hrsh7th/cmp-vsnip'
     Plug 'hrsh7th/vim-vsnip'
+    Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'liuchengxu/vim-which-key'
-    Plug 'sbdchd/neoformat'
+    " Plug 'sbdchd/neoformat' " ?
 
     Plug 'voldikss/vim-floaterm'
 call plug#end()
@@ -113,7 +115,8 @@ nnoremap <leader>p "*p
 nnoremap <c-b> :py3file %<cr>
 " nnoremap gg=G gg=Gg;
 " vnoremap <leader>p "_dP
-nnoremap <leader>t :FloatermToggle<cr>
+nnoremap <leader>t :FloatermToggle!<cr>
+inoremap <c-bs> <c-w>
 
 " dashboard.vim Settings
 let g:dashboard_default_executive ='telescope'
@@ -364,7 +367,7 @@ let g:limelight_eop = '\ze\n^\s'
 let g:limelight_priority = -1
 
 " SnipMate Settings
-let g:snipMate = { 'snippet_version' : 1 }
+" let g:snipMate = { 'snippet_version' : 1 }
 
 " indentLine Settings
 let g:indentLine_setColors = 1
