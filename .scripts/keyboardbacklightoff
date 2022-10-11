@@ -1,0 +1,1 @@
+light -s sysfs/leds/asus::kbd_backlight -S 0

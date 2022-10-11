@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Gurgaon: 1270642
+# Jaipur: 1269515
+
+cityids=$HOME/.config/awesome/cityids.txt
+
+selected_city=$(awk -F '\t' '{print $1}' $cityids | rofi -dmenu -i)
+selected_city_id=$(awk -F '\t' "\$1 ~ /$selected_city/ {print \$2}" $cityids | head -1)
+
+sed -i "s/^    city_id = [[:digit:]]*,.*\$/    city_id = $selected_city_id,/" \
+    $HOME/.config/awesome/theme/theme.lua
