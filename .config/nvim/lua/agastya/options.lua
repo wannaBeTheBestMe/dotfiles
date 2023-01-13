@@ -28,19 +28,19 @@ opt.termguicolors = true
 opt.scrolloff = 8
 opt.showmode = false
 opt.completeopt = {"menu", "menuone", "noinsert", "noselect"}
--- opt.colorcolumn = "80"
+opt.colorcolumn = "80"
 opt.signcolumn = "auto"
 opt.cmdheight = 1
 opt.updatetime = 50
 opt.shortmess:append("c")
 opt.mouse = "a"
-opt.guifont = "SF Mono Regular:h11"
+opt.guifont = "Liga SFMono Nerd Font:h14"
 -- opt.guifont = "JetBrainsMono Nerd Font Mono:h12"
--- opt.guifont = "ComicMono Nerd Font"
 opt.autochdir = true
 opt.nrformats:append("alpha")
 opt.background = "dark"
 opt.dictionary = "spell"
 opt.sidescrolloff = 8
 -- opt.laststatus = 3
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+opt.foldexpr = "nvim_treesitter#foldexpr()"
+opt.timeoutlen = 500

@@ -112,5 +112,5 @@ hoo() {
 }
 
 # Load zsh-syntax-highlighting (always last)
-source $HOME/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $HOME/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 

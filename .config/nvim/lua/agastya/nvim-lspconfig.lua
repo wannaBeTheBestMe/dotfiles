@@ -17,7 +17,9 @@ end
 
 -- LSP client settings
 
-require("nvim-lsp-installer").setup {}
+require("nvim-lsp-installer").setup({
+    ensure_installed = {"ltex", "html", "bashls", "ccls", "tsserver", "texlab", "pyright", "sumneko_lua", "clangd"}
+})
 
 require("lspconfig").sumneko_lua.setup {
     capabilities = capabilities,
@@ -39,10 +41,10 @@ require("lspconfig").texlab.setup {
     capabilities = capabilities,
     on_attach = on_attach,
 }
-require("lspconfig").ltex.setup {
-    capabilities = capabilities,
-    on_attach = on_attach,
-}
+-- require("lspconfig").ltex.setup {
+--     capabilities = capabilities,
+--     on_attach = on_attach,
+-- }
 require("lspconfig").tsserver.setup {
     capabilities = capabilities,
     on_attach = on_attach,
@@ -55,21 +57,5 @@ require("lspconfig").cssls.setup {
     capabilities = capabilities,
     on_attach = on_attach,
 }
-
--- Set up zk using zk-nvim (require("lspconfig") is NOT required in this case)
-require("zk").setup({
-  picker = "telescope",
-  lsp = {
-    -- `config` is passed to `vim.lsp.start_client(config)`
-    config = {
-      cmd = { "zk", "lsp" },
-      name = "zk",
-    },
-    auto_attach = {
-      enabled = true,
-      filetypes = { "markdown" },
-    },
-  },
-})
 
 vim.keymap.set("n", "<leader>li", ":LspInfo<CR>")

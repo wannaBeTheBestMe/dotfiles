@@ -38,7 +38,7 @@ require("telescope").load_extension("fzy_native")
 
 -- Personal shortcuts
 
-set("n", "<leader>fp", "<cmd>Telescope find_files search_dirs=~/.config/nvim/<CR>")
+set("n", "<leader>fp", "<cmd>Telescope find_files search_dirs=~/.config/<CR>")
 
 -- project.nvim integration
 

@@ -49,6 +49,21 @@ return require("packer").startup(function(use)
     },
   }
   -- use "glepnir/dashboard-nvim"
+  use "folke/which-key.nvim"
+
+  -- use 'rcarriga/nvim-notify'
+  -- use 'MunifTanjim/nui.nvim'
+  -- use({
+  --   "folke/noice.nvim",
+  --   event = "VimEnter",
+  --   config = function()
+  --     require("noice").setup()
+  --   end,
+  --   requires = {
+  --     "MunifTanjim/nui.nvim",
+  --     "rcarriga/nvim-notify",
+  --   }
+  -- })
 
   -- Better tooling
   use "tpope/vim-fugitive"
@@ -59,4 +74,8 @@ return require("packer").startup(function(use)
   use "mickael-menu/zk-nvim"
   use "preservim/vim-pencil"
   use "ahmedkhalf/project.nvim"
+
+  -- Improved performance
+  use 'lewis6991/impatient.nvim'
+  use "nathom/filetype.nvim"
 end)
